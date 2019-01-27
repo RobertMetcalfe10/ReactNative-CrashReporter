@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Button, View} from 'react-native';
 import stacktraceParser from 'stacktrace-parser';
+import {NativeModules} from 'react-native';
 
 export default class App extends Component<Props> {
 
@@ -19,17 +20,20 @@ export default class App extends Component<Props> {
   // };
 
   static async firebaseGlobalHandler(error, isFatal) {
-    // const stack = App.parseErrorStack(error);
-    console.log(error);
-    if (isFatal) {
-        App.originalHandler(error, true);
-    } else {
-        App.originalHandler(error, false);
-    }
+      try {
+          if (isFatal) {
+              NativeModules.FirebaseReporter.reportErrorFirebase(error.toString(), (err) => {console.log(err)}, (msg) => {console.log(msg)});
+              App.originalHandler(error, true);
+          } else {
+              App.originalHandler(error, false);
+          }
+      } catch (e) {
+          console.log(e)
+      }
   }
 
     static throwException() {
-        throw undefined
+        throw Error("FirebaseError")
     }
 
   render() {
