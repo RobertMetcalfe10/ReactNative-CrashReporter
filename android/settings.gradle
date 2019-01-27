@@ -1,0 +1,3 @@
+rootProject.name = 'rn_crash_reporter'
+
+include ':app'
